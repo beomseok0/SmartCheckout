@@ -1,4 +1,4 @@
-# Smart CheckOUt: 핸드폰 카메라 기반 무인 결제 시스템
+# Smart CheckOut: 핸드폰 카메라 기반 무인 결제 시스템
 
 **Smaer CheckOut**은 딥러닝 기반 객체 인식 기술인 YOLO(You Only Look Once)를 활용하여
 상품의 바코드 없이 외형만으로 자동 인식하고 결제하는 무인 계산 시스템입니다.
