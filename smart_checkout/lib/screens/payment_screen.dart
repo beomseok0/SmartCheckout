@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import '../services/api_service.dart';
 
 class PaymentScreen extends StatefulWidget {
   @override
@@ -7,18 +8,20 @@ class PaymentScreen extends StatefulWidget {
 }
 
 class _PaymentScreenState extends State<PaymentScreen> {
-  int originalPrice = 3000;
+  int originalPrice = 0;
   int couponDiscount = 0;
   int pointsToUse = 0;
   int availablePoints = 5000;
   bool usePoints = false;
   String selectedCoupon = '쿠폰 선택';
   String selectedPaymentMethod = '결제 수단 선택';
+  
+  PredictionResult? _predictionResult;
 
   List<Map<String, dynamic>> availableCoupons = [
     {'name': '3,000원 할인 쿠폰', 'discount': 3000},
     {'name': '1,000원 할인 쿠폰', 'discount': 1000},
-    {'name': '10% 할인 쿠폰', 'discount': 300},
+    {'name': '10% 할인 쿠폰', 'discount': 0}, // 퍼센트 할인은 계산에서 처리
   ];
 
   List<String> paymentMethods = [
@@ -30,12 +33,44 @@ class _PaymentScreenState extends State<PaymentScreen> {
     '현금'
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _loadPredictionResult();
+    });
+  }
+
+  void _loadPredictionResult() {
+    final args = ModalRoute.of(context)?.settings.arguments;
+    if (args is PredictionResult) {
+      setState(() {
+        _predictionResult = args;
+        originalPrice = args.total;
+      });
+    }
+  }
+
   int get finalPrice {
     int price = originalPrice - couponDiscount;
     if (usePoints) {
       price -= pointsToUse;
     }
     return price < 0 ? 0 : price;
+  }
+
+  int _calculateCouponDiscount(int basePrice) {
+    if (selectedCoupon == '쿠폰 선택') return 0;
+    
+    final coupon = availableCoupons.firstWhere(
+      (c) => c['name'] == selectedCoupon,
+      orElse: () => {'discount': 0},
+    );
+    
+    if (selectedCoupon.contains('10%')) {
+      return (basePrice * 0.1).round();
+    }
+    return coupon['discount'] ?? 0;
   }
 
   void _showCouponPicker() {
@@ -84,13 +119,16 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     );
                   }
                   final coupon = availableCoupons[index - 1];
+                  final discount = coupon['name'].contains('10%') 
+                      ? (originalPrice * 0.1).round()
+                      : coupon['discount'];
                   return CupertinoListTile(
                     title: Text(coupon['name']),
-                    subtitle: Text('${coupon['discount']}원 할인'),
+                    subtitle: Text('${discount}원 할인'),
                     onTap: () {
                       setState(() {
                         selectedCoupon = coupon['name'];
-                        couponDiscount = coupon['discount'];
+                        couponDiscount = discount;
                       });
                       Navigator.pop(context);
                     },
@@ -271,49 +309,149 @@ class _PaymentScreenState extends State<PaymentScreen> {
                       color: CupertinoColors.systemGrey6,
                       borderRadius: BorderRadius.circular(12),
                     ),
-                    child: Row(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          width: 60,
-                          height: 60,
-                          decoration: BoxDecoration(
-                            color: CupertinoColors.systemGrey5,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Icon(
-                            CupertinoIcons.cube_box_fill,
-                            color: CupertinoColors.systemGrey,
+                        Text(
+                          '주문 상품',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w600,
                           ),
                         ),
-                        SizedBox(width: 16),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                        SizedBox(height: 12),
+                        if (_predictionResult != null && _predictionResult!.products.isNotEmpty)
+                          ..._predictionResult!.products.map((product) => Container(
+                            margin: EdgeInsets.only(bottom: 8),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    color: CupertinoColors.systemGrey5,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    CupertinoIcons.cube_box_fill,
+                                    color: CupertinoColors.systemGrey,
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        product.product,
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        '수량: ${product.quantity}개',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: CupertinoColors.secondaryLabel,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      '₩${product.price.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        color: CupertinoColors.secondaryLabel,
+                                      ),
+                                    ),
+                                    Text(
+                                      '₩${product.subtotal.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
+                                      style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          )).toList()
+                        else
+                          Container(
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    color: CupertinoColors.systemGrey5,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Icon(
+                                    CupertinoIcons.cube_box_fill,
+                                    color: CupertinoColors.systemGrey,
+                                  ),
+                                ),
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '제품 정보 없음',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                      Text(
+                                        '수량: 0개',
+                                        style: TextStyle(
+                                          fontSize: 14,
+                                          color: CupertinoColors.secondaryLabel,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Text(
+                                  '₩0',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (_predictionResult != null && _predictionResult!.products.isNotEmpty) ...[
+                          Divider(height: 24),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
-                                '베지밀',
+                                '총 상품 금액',
                                 style: TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w600,
                                 ),
                               ),
                               Text(
-                                '수량: 1개',
+                                '₩${originalPrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
                                 style: TextStyle(
-                                  fontSize: 14,
-                                  color: CupertinoColors.secondaryLabel,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w700,
+                                  color: CupertinoColors.systemBlue,
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                        Text(
-                          '₩${originalPrice.toString().replaceAllMapped(RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (Match m) => '${m[1]},')}',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
+                        ],
                       ],
                     ),
                   ),
