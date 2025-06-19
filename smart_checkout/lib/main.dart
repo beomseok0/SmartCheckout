@@ -3,16 +3,19 @@ import 'package:flutter/cupertino.dart';
 import 'screens/start_screen.dart';
 import 'screens/scan_screen.dart';
 import 'screens/payment_screen.dart';
+import 'camera_screen.dart';
 
 void main() {
-  runApp(SmartCheckoutApp());
+  runApp(const MyApp());
 }
 
-class SmartCheckoutApp extends StatelessWidget {
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Smart Checkout',
+      title: '스마트 체크아웃',
       theme: ThemeData(
         primarySwatch: Colors.blue,
         fontFamily: 'SF Pro Display', // iOS 기본 폰트
@@ -40,6 +43,7 @@ class SmartCheckoutApp extends StatelessWidget {
         '/scan': (context) => ScanScreen(),
         '/payment': (context) => PaymentScreen(),
       },
+      home: const CameraScreen(),
     );
   }
 }
