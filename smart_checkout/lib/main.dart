@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'screens/start_screen.dart';
-import 'screens/scan_screen.dart';
 import 'screens/realtime_scan_screen.dart';
 import 'screens/payment_screen.dart';
 
@@ -38,7 +37,6 @@ class SmartCheckoutApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => StartScreen(),
-        '/scan': (context) => ScanScreen(),
         '/realtime-scan': (context) => RealtimeScanScreen(),
         '/payment': (context) => PaymentScreen(),
       },

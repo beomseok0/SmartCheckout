@@ -87,50 +87,14 @@ class StartScreen extends StatelessWidget {
 
               SizedBox(height: 16),
 
-              // 일반 스캔 버튼
-              Container(
-                width: double.infinity,
-                height: 54,
-                child: CupertinoButton(
-                  color: CupertinoColors.systemGrey5,
-                  borderRadius: BorderRadius.circular(12),
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/scan');
-                  },
-                  child: Text(
-                    '일반 스캔',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: CupertinoColors.label,
-                    ),
-                  ),
-                ),
-              ),
-
-              SizedBox(height: 20),
-
               // 부가 설명
-              Column(
-                children: [
-                  Text(
-                    '실시간 스캔: 카메라를 향하면 자동으로 제품을 인식합니다',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: CupertinoColors.tertiaryLabel,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    '일반 스캔: 사진을 촬영하거나 갤러리에서 선택합니다',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: CupertinoColors.tertiaryLabel,
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+              Text(
+                '실시간 스캔: 카메라를 향하면 자동으로 제품을 인식합니다',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: CupertinoColors.tertiaryLabel,
+                ),
+                textAlign: TextAlign.center,
               ),
             ],
           ),

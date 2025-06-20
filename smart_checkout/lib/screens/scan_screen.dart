@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:camera/camera.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
@@ -21,8 +20,7 @@ class _ScanScreenState extends State<ScanScreen>
   
   CameraController? _cameraController;
   List<CameraDescription>? _cameras;
-  final ImagePicker _picker = ImagePicker();
-  
+
   PredictionResult? _predictionResult;
 
   @override
@@ -86,43 +84,6 @@ class _ScanScreenState extends State<ScanScreen>
         ],
       ),
     );
-  }
-
-  Future<void> _takePicture() async {
-    if (_cameraController == null || !_cameraController!.value.isInitialized) {
-      return;
-    }
-
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final XFile image = await _cameraController!.takePicture();
-      await _analyzeImage(File(image.path));
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showErrorDialog('사진 촬영 중 오류가 발생했습니다: $e');
-    }
-  }
-
-  Future<void> _pickImageFromGallery() async {
-    try {
-      final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-      if (image != null) {
-        setState(() {
-          _isLoading = true;
-        });
-        await _analyzeImage(File(image.path));
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-      _showErrorDialog('갤러리에서 이미지 선택 중 오류가 발생했습니다: $e');
-    }
   }
 
   Future<void> _analyzeImage(File imageFile) async {
@@ -476,68 +437,6 @@ class _ScanScreenState extends State<ScanScreen>
                     style: TextStyle(
                       color: Colors.white70,
                       fontSize: 14,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-          // 하단 버튼들
-          if (_isScanning && !_isLoading)
-            Positioned(
-              bottom: 20,
-              left: 20,
-              right: 20,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  CupertinoButton(
-                    onPressed: _pickImageFromGallery,
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Icon(
-                        CupertinoIcons.photo,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                  ),
-                  CupertinoButton(
-                    onPressed: _takePicture,
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(40),
-                        border: Border.all(color: Colors.white, width: 4),
-                      ),
-                      child: Icon(
-                        CupertinoIcons.camera,
-                        color: Colors.black,
-                        size: 40,
-                      ),
-                    ),
-                  ),
-                  CupertinoButton(
-                    onPressed: () {},
-                    child: Container(
-                      width: 60,
-                      height: 60,
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.2),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Icon(
-                        CupertinoIcons.flash_off,
-                        color: Colors.white,
-                        size: 30,
-                      ),
                     ),
                   ),
                 ],

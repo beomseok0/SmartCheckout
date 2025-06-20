@@ -19,28 +19,30 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# YOLO 모델 로드 (모델 파일이 있는 경우)
-model_path = "yolo_combined.pt"
-if os.path.exists(model_path):
-    model = YOLO(model_path)
-else:
-    print(f"Warning: Model file {model_path} not found. Using mock predictions.")
+# YOLO 모델 로드
+model = None
+try:
+    model = YOLO('yolo_combined.pt')
+    print("YOLO 모델 로드 성공!")
+except Exception as e:
+    print(f"YOLO 모델 로드 실패: {e}")
+    print("목업 모드로 실행됩니다.")
     model = None
 
 # 제품 ID와 이름, 가격 매핑
 id_to_name_price = {
-    0: ("Milkis_can", 1200),
-    1: ("coke_zero_bottle", 1500),
-    2: ("mogu_bottle", 1300),
-    3: ("monster_can", 2000),
-    4: ("pocari_bottle", 1600),
-    5: ("sprite_bottle", 1500),
-    6: ("vitamin_drink_bottle", 1100),
-    7: ("bananakick", 1000),
-    8: ("kkokkalcorn", 1000),
-    9: ("ojingeozip", 1000),
-    10: ("pocachip", 1000),
-    11: ("saeugang", 1000),
+    0: ("밀키스", 1200),
+    1: ("코카콜라 제로 500ml", 1500),
+    2: ("모구모구 복숭아맛", 1300),
+    3: ("몬스터 오리지널", 2000),
+    4: ("포카리 500ml", 1600),
+    5: ("스프라이트 500ml", 1500),
+    6: ("비타오500 100ml", 1100),
+    7: ("바나나킥", 1000),
+    8: ("꼬깔콘", 1000),
+    9: ("오징어칩", 1000),
+    10: ("포카칩 오리지널", 1000),
+    11: ("새우깡", 1000),
 }
 
 def mock_prediction():
@@ -58,13 +60,13 @@ def mock_prediction():
     return detected
 
 def analyze_image(image_data):
-    """이미지 분석 함수"""
+    """이미지 분석 함수 (Flask 스타일)"""
     try:
         # base64 이미지를 PIL Image로 변환
         image_bytes = base64.b64decode(image_data.split(',')[1] if ',' in image_data else image_data)
-        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        image = Image.open(io.BytesIO(image_bytes))
         
-        # 예측 수행
+        # 예측 수행 (Flask 스타일)
         if model is not None:
             results = model(image)
             detected = results[0].boxes.cls.tolist()
@@ -146,9 +148,9 @@ async def predict(file: UploadFile = File(...)):
     try:
         # 이미지 읽기
         image_bytes = await file.read()
-        image = Image.open(io.BytesIO(image_bytes)).convert("RGB")
+        image = Image.open(io.BytesIO(image_bytes))
         
-        # 예측 수행
+        # 예측 수행 (Flask 스타일)
         if model is not None:
             results = model(image)
             detected = results[0].boxes.cls.tolist()
@@ -197,12 +199,8 @@ async def get_products():
     """사용 가능한 제품 목록 반환"""
     return {
         "products": [
-            {
-                "id": product_id,
-                "name": name,
-                "price": price
-            }
-            for product_id, (name, price) in id_to_name_price.items()
+            {"id": id, "name": name, "price": price}
+            for id, (name, price) in id_to_name_price.items()
         ]
     }
 
