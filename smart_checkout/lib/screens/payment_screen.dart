@@ -323,33 +323,33 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         if (_predictionResult != null && _predictionResult!.products.isNotEmpty)
                           ..._predictionResult!.products.map((product) => Container(
                             margin: EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    color: CupertinoColors.systemGrey5,
-                                    borderRadius: BorderRadius.circular(8),
-                                  ),
-                                  child: Icon(
-                                    CupertinoIcons.cube_box_fill,
-                                    color: CupertinoColors.systemGrey,
-                                  ),
-                                ),
-                                SizedBox(width: 16),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
+                    child: Row(
+                      children: [
+                        Container(
+                          width: 60,
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.systemGrey5,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Icon(
+                            CupertinoIcons.cube_box_fill,
+                            color: CupertinoColors.systemGrey,
+                          ),
+                        ),
+                        SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
                                         product.product,
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                      Text(
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              Text(
                                         '수량: ${product.quantity}개',
                                         style: TextStyle(
                                           fontSize: 14,
@@ -411,21 +411,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       ),
                                       Text(
                                         '수량: 0개',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: CupertinoColors.secondaryLabel,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: CupertinoColors.secondaryLabel,
                                 ),
-                                Text(
+                              ),
+                            ],
+                          ),
+                        ),
+                        Text(
                                   '₩0',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                               ],
                             ),
                           ),
