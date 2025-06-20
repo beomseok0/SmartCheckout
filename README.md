@@ -1,17 +1,22 @@
-# Smart Checkout - AI 기반 자동 결제 시스템
+# Smart Checkout - AI-based Automatic Payment System
 
-AI 컴퓨터 비전을 활용한 스마트 체크아웃 시스템입니다. 제품을 카메라로 스캔하면 자동으로 인식하고 결제까지 진행할 수 있습니다.
+A smart checkout system utilizing AI computer vision. Products are automatically detected through a camera scan and processed for payment seamlessly.
 
-## 🚀 주요 기능
+## 🚀 KEY FEATURES
 
-- **AI 제품 인식**: YOLO 모델을 사용한 실시간 제품 감지
-- **실시간 카메라 스캔**: 모바일 카메라를 통한 제품 스캔
-- **갤러리 이미지 업로드**: 기존 이미지로도 제품 인식 가능
-- **자동 가격 계산**: 감지된 제품의 수량과 가격 자동 계산
-- **쿠폰 및 포인트 시스템**: 할인 쿠폰과 포인트 사용 기능
-- **다양한 결제 수단**: 신용카드, 모바일 결제 등 지원
+- **AI Product Recognition**: Real-time product detection using the YOLO model
 
-## 🏗️ 프로젝트 구조
+- **Live Camera Scanning**: Scan products using a mobile camera
+
+- **Gallery Image Upload**: Recognize products from uploaded images
+
+- **Auto Price Calculation**: Automatically calculate total cost based on quantity and price
+
+- **Coupon & Points System**: Apply discount coupons and use reward points
+
+- **Multiple Payment Options**: Support for credit cards, mobile payments, and more
+
+## 🏗️ Project Structure
 
 ```
 SmartCheckout/
@@ -31,23 +36,23 @@ SmartCheckout/
 └── README.md
 ```
 
-## 🛠️ 기술 스택
+## 🛠️ Tech Stack
 
 ### Frontend (Flutter)
-- **Flutter**: 크로스 플랫폼 모바일 앱 개발
-- **Camera**: 실시간 카메라 기능
-- **Image Picker**: 갤러리 이미지 선택
-- **HTTP**: API 통신
+- **Flutter**: Cross-platform mobile app development
+- **Camera**: Live camera features
+- **Image Picker**: Choose images from the gallery
+- **HTTP**: REST API communication
 
 ### Backend (FastAPI)
-- **FastAPI**: 고성능 Python 웹 프레임워크
-- **YOLO**: 객체 감지 AI 모델
-- **Pillow**: 이미지 처리
-- **Uvicorn**: ASGI 서버
+- **FastAPI**: High-performance Python web framework
+- **YOLO**: Object detection AI model
+- **Pillow**: Image processing
+- **Uvicorn**: ASGI server
 
-## 📱 지원 제품
+## 📱 Supported Products
 
-현재 시스템에서 인식 가능한 제품들:
+Products:
 
 | 제품명 | 가격 | 카테고리 |
 |--------|------|----------|
@@ -64,9 +69,9 @@ SmartCheckout/
 | pocachip | 1,000원 | 과자 |
 | saeugang | 1,000원 | 과자 |
 
-## 🚀 설치 및 실행
+## 🚀 Installation & Run
 
-### 1. 백엔드 서버 설정
+### 1. Backend Setup
 
 ```bash
 # 백엔드 디렉토리로 이동
@@ -83,9 +88,9 @@ pip install -r requirements.txt
 python main.py
 ```
 
-서버는 `http://localhost:8000`에서 실행됩니다.
+The server runs at: http://localhost:8000
 
-### 2. Flutter 앱 설정
+### 2. Flutter App Setup
 
 ```bash
 # Flutter 앱 디렉토리로 이동
@@ -98,7 +103,7 @@ flutter pub get
 flutter run
 ```
 
-### 3. API 서버 주소 설정
+### 3. API Server Address
 
 `smart_checkout/lib/services/api_service.dart` 파일에서 API 서버 주소를 확인하세요:
 
@@ -106,57 +111,55 @@ flutter run
 static const String baseUrl = 'http://localhost:8000';
 ```
 
-실제 디바이스에서 테스트할 경우, 컴퓨터의 IP 주소로 변경해야 합니다.
+When testing on a physical device, replace localhost with your computer's local IP address.
+## 📸 How to Use
 
-## 📸 사용 방법
+1. **Start App**: Launch the Smart Checkout app
+2. **Start Scan**: Tap the "Start Scan" button to activate the camera
+3. **Scan Product**: 
+   -Use the camera to scan a product
+   - Or select an image from the gallery
+4. **Proceed to Payment**: Confirm the detected products and proceed to checkout
+5. **Apply Discounts**: Use coupons or points to receive a discount
 
-1. **앱 시작**: 스마트 체크아웃 앱을 실행합니다.
-2. **스캔 시작**: "스캔 시작" 버튼을 눌러 카메라를 활성화합니다.
-3. **제품 스캔**: 
-   - 카메라로 제품을 스캔하거나
-   - 갤러리에서 이미지를 선택합니다.
-4. **결제 진행**: 감지된 제품 정보를 확인하고 결제를 진행합니다.
-5. **할인 적용**: 쿠폰이나 포인트를 사용하여 할인을 적용할 수 있습니다.
+## 🔧 Development Mode
 
-## 🔧 개발 모드
+### Test Without Model
 
-### 모델 파일 없이 테스트
+If yolo_combined.pt (YOLO model file) is missing, the backend will automatically switch to a mock prediction mode—useful for testing and development.
 
-YOLO 모델 파일(`yolo_combined.pt`)이 없는 경우, 백엔드는 자동으로 목업 예측을 사용합니다. 이는 개발 및 테스트 목적으로 유용합니다.
+### API Testing
+Access FastAPI's built-in documentation at:
 
-### API 테스트
+Swagger UI: http://localhost:8000/docs
 
-FastAPI 자동 문서를 확인하려면:
-- `http://localhost:8000/docs` - Swagger UI
-- `http://localhost:8000/redoc` - ReDoc
+ReDoc: http://localhost:8000/redoc
 
-## 🐛 문제 해결
+## 🐛 Troubleshooting
 
-### 일반적인 문제들
+### Common Issues
 
-1. **카메라 권한 오류**
-   - 앱 설정에서 카메라 권한을 허용하세요.
+1. **Camera Permission Error**
+   - Ensure the app has permission to use the camera in system settings.
 
-2. **API 연결 오류**
-   - 백엔드 서버가 실행 중인지 확인하세요.
-   - 네트워크 주소가 올바른지 확인하세요.
+2. **API Connection Error**
+   - Make sure the backend server is running and the API address is correct.
 
-3. **모델 로딩 오류**
-   - YOLO 모델 파일이 올바른 위치에 있는지 확인하세요.
-   - 모델 파일이 없어도 목업 모드로 작동합니다.
+3. **Model Loading Error**
+   - Confirm that the YOLO model file exists in the correct location.
+   - If missing, the backend will fall back to mock mode.
 
-## 🤝 기여하기
+## 🤝 Contributing
 
-1. 이 저장소를 포크합니다.
-2. 새로운 기능 브랜치를 생성합니다.
-3. 변경사항을 커밋합니다.
-4. 브랜치에 푸시합니다.
-5. Pull Request를 생성합니다.
+1. Fork this repository
+2. Create a new branch for your feature
+3. Commit your changes
+4. Push your branch
+5. Open a Pull Request
+## 📄 License
 
-## 📄 라이선스
+This project is licensed under the MIT License.
 
-이 프로젝트는 MIT 라이선스 하에 배포됩니다.
+## 📞 Contact
 
-## 📞 문의
-
-프로젝트에 대한 문의사항이 있으시면 이슈를 생성해 주세요.
+If you have any questions or issues, please open an issue in this repository.
