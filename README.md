@@ -116,7 +116,7 @@ When testing on a physical device, replace localhost with your computer's local 
 
 1. **Start App**: Launch the Smart Checkout app
 2. **Start Scan**: Tap the "Start Scan" button to activate the camera
-3. **제품 스캔**: 
+3. **Scan Product**: 
    -Use the camera to scan a product
    - Or select an image from the gallery
 4. **Proceed to Payment**: Confirm the detected products and proceed to checkout
