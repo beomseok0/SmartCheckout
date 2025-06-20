@@ -19,6 +19,7 @@ class _RealtimeScanScreenState extends State<RealtimeScanScreen> {
   WebSocketChannel? _channel;
   bool _isConnected = false;
   bool _isAnalyzing = false;
+  bool _isMirrored = true; // 카메라 미러링 상태
   
   PredictionResult? _currentResult;
   Timer? _analysisTimer;
@@ -46,6 +47,7 @@ class _RealtimeScanScreenState extends State<RealtimeScanScreen> {
           ResolutionPreset.medium, // 실시간 처리를 위해 중간 해상도 사용
         );
         await _cameraController!.initialize();
+        
         if (mounted) {
           setState(() {});
           _startRealtimeAnalysis();
@@ -158,6 +160,12 @@ class _RealtimeScanScreenState extends State<RealtimeScanScreen> {
     );
   }
 
+  void _toggleMirror() {
+    setState(() {
+      _isMirrored = !_isMirrored;
+    });
+  }
+
   @override
   void dispose() {
     _analysisTimer?.cancel();
@@ -192,6 +200,18 @@ class _RealtimeScanScreenState extends State<RealtimeScanScreen> {
             margin: EdgeInsets.only(right: 16),
             child: Row(
               children: [
+                // 미러링 토글 버튼
+                CupertinoButton(
+                  padding: EdgeInsets.all(8),
+                  onPressed: _toggleMirror,
+                  child: Icon(
+                    _isMirrored ? CupertinoIcons.arrow_2_circlepath : CupertinoIcons.arrow_2_circlepath_circle,
+                    color: Colors.white,
+                    size: 24,
+                  ),
+                ),
+                SizedBox(width: 8),
+                // 연결 상태 표시
                 Container(
                   width: 8,
                   height: 8,
@@ -217,7 +237,10 @@ class _RealtimeScanScreenState extends State<RealtimeScanScreen> {
         children: [
           // 카메라 뷰
           if (_cameraController != null && _cameraController!.value.isInitialized)
-            CameraPreview(_cameraController!)
+            Transform.scale(
+              scaleX: _isMirrored ? -1.0 : 1.0,
+              child: CameraPreview(_cameraController!),
+            )
           else
             Container(
               width: double.infinity,
